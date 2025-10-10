@@ -2,6 +2,7 @@ import unittest
 from collections import defaultdict
 
 import scrapy
+from scrapy.settings import Settings
 
 from broadcrawl.limits import BroadCrawlLimitsMiddleware
 
@@ -61,7 +62,7 @@ class BroadCrawlLimitsTestCase(unittest.TestCase):
         })
         middleware = self._create_middleware(randomize_links=True)
         filtered = self._run_middleware(middleware, 'domain1.com', requests)
-        assert(filtered[0].url.endswith('/80'))
+        assert(filtered[0].url.endswith('/24'))
 
     def _run_middleware(self, middleware, domain, requests):
         request = scrapy.Request(url='http://%s' % domain)
@@ -74,7 +75,7 @@ class BroadCrawlLimitsTestCase(unittest.TestCase):
                            max_links_per_domain=1000,
                            randomize_links=False,
                            random_seed=0):
-        settings = scrapy.settings.Settings({
+        settings = Settings({
             'BCL_MAX_INTERNAL_LINKS': max_internal_links,
             'BCL_MAX_EXTERNAL_LINKS': max_external_links,
             'BCL_MAX_LINKS_PER_DOMAIN': max_links_per_domain,
@@ -84,8 +85,8 @@ class BroadCrawlLimitsTestCase(unittest.TestCase):
         return BroadCrawlLimitsMiddleware(settings)
 
     def _generate_requests(self, domain_counts):
-        for domain, count in domain_counts.iteritems():
-            for i in xrange(count):
+        for domain, count in domain_counts.items():
+            for i in range(count):
                 yield self._get_next_request(domain)
 
     def _get_next_request(self, domain):

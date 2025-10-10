@@ -55,7 +55,7 @@ class BroadCrawlLimitsMiddleware(object):
 
     def _filter_internal_links_count(self, requests, response):
         internal_links_count = 0
-        print requests
+        print(requests)
         for r in requests:
             max_internal_links = r.meta.get('max_internal_links',
                                             self.max_internal_links)
