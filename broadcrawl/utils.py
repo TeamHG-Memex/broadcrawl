@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import re
-import urlparse
+from urllib.parse import urlparse, ParseResult
 
 
 def split_list(list_, condition):
@@ -19,9 +19,9 @@ has_scheme = re.compile(r"[a-z]+://.+", re.IGNORECASE).match
 
 
 def get_domain(url):
-    host = urlparse.urlparse(url).netloc
+    host = urlparse(url).netloc
     if ":" in host:
-        host.split(":", 1)[0]
+        host = host.split(":", 1)[0]
     return host
 
 
@@ -48,7 +48,7 @@ def get_hostname(url):
     """
     url = add_scheme_if_missing(url)
     try:
-        domain = urlparse.urlparse(url).hostname or ''
+        domain = urlparse(url).hostname or ''
     except Exception:
         domain = ''
     else:
@@ -76,8 +76,8 @@ def get_robotstxt_url(url):
     >>> get_robotstxt_url("https://example.com/foo/bar?baz=1")
     'https://example.com/robots.txt'
     """
-    if not isinstance(url, urlparse.ParseResult):
-        url = urlparse.urlparse(url)
+    if not isinstance(url, ParseResult):
+        url = urlparse(url)
     return "%s://%s/robots.txt" % (url.scheme, url.netloc)
 
 
@@ -106,4 +106,4 @@ def is_external_url(source_url, target_url):
     return p1 != p2
 
 if __name__ == "__main__":
-    print get_domain("http://3223423wfawefawf.onion")
+    print(get_domain("http://3223423wfawefawf.onion"))
